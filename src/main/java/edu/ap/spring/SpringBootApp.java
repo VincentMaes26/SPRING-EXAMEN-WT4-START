@@ -30,37 +30,9 @@ public class SpringBootApp {
 	}
 	
 	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-											MessageListenerAdapter listenerAdapter) {
-
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new ChannelTopic(CHANNEL));
-
-		return container;
-	}
-
-	@Bean
-	MessageListenerAdapter listenerAdapter(InhaalExamenController controller) {
-		return new MessageListenerAdapter(controller, "onMessage");
-	}
-	
-	@Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return (args) -> {
-			// Messaging
-	 		service.sendMessage(CHANNEL, "Hello from Spring Boot");
-	 		
-	 		// Keys
-	 		service.setKey(KEY, "Key from Spring Boot");
-	 		System.out.println(service.getKey(KEY));
-	 		
-	 		// Bitops
-	 		String bitKey = "edu:ap:bits";
-	 		service.setBit(bitKey, 73, true);
-	 		service.setBit(bitKey, 85, true);
-	 		service.setBit(bitKey, 90, true);
-	 		
+			
 	 		// Inhaalexamens
 	 		Map<Object, Object > inhaalexamens = new HashMap<Object, Object>();
 	 		InhaalExamen examen1 = new InhaalExamen("Jos", ".NET", "Niet genoeg gestudeerd.");
