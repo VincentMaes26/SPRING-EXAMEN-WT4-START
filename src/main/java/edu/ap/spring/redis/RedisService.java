@@ -35,8 +35,8 @@ public class RedisService {
 		 return template.opsForHash().entries(key);
 	}
 	
-	public void hset(String key, Map<String, String> actors) {
-		template.opsForHash().putAll(key, actors);
+	public void hset(String key, Map<Object, Object> inhaalexamens) {
+		template.opsForHash().putAll(key, inhaalexamens);
 	}
 	
 	public void sendMessage(String channel, String message) {
