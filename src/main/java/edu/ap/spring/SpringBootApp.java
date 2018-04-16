@@ -13,8 +13,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import edu.ap.spring.controllers.InhaalExamenController;
+
 import edu.ap.spring.redis.RedisService;
+import edu.ap.spring.controllers.InhaalExamenController;
 import edu.ap.spring.model.*;
 
 @SpringBootApplication
@@ -30,9 +31,30 @@ public class SpringBootApp {
 	}
 	
 	@Bean
+	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+											MessageListenerAdapter listenerAdapter) {
+
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(listenerAdapter, new ChannelTopic(CHANNEL));
+
+		return container;
+	}
+
+	@Bean
+	MessageListenerAdapter listenerAdapter(InhaalExamenController controller) {
+		return new MessageListenerAdapter(controller, "onMessage");
+	}
+	
+	@Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return (args) -> {
-			
+			// Messaging
+	 		service.sendMessage(CHANNEL, "Hello from Spring Boot");
+	 		
+	 		// Keys
+	 		service.setKey(KEY, "Key from Spring Boot");
+	 		System.out.println(service.getKey(KEY));
 	 		// Inhaalexamens
 	 		Map<Object, Object > inhaalexamens = new HashMap<Object, Object>();
 	 		InhaalExamen examen1 = new InhaalExamen("Jos", ".NET", "Niet genoeg gestudeerd.");
